@@ -16,7 +16,7 @@ st.sidebar.title("MacMoD")
 st.sidebar.write("Machine Condition Monitoring Dashboard")
 st.sidebar.markdown("---") # Adds a clean horizontal divider line
 
-# 4. Manually place the navigation links exactly where you want them
+# Manually place the navigation links exactly where you want them
 st.sidebar.page_link(dashboard_page, label="Dashboard Overview", icon="🏠")
 st.sidebar.page_link(machines_page, label="Machines", icon="🎛️")
 
