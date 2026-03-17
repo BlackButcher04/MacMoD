@@ -54,9 +54,9 @@ apply_enterprise_theme()
 # The paths are relative to where container.py is located
 dashboard_page = st.Page("dashboard.py", title="Dashboard Overview", icon="🏠")
 diagnose_page = st.Page("diagnose.py", title="Intelligent Diagnose", icon="🧠")
-maintenance_page = st.Page("page02.py", title="Machines Maintenance", icon="🛠️")
+maintenance_page = st.Page("maintenanceV2.py", title="Machines Maintenance", icon="🛠️")
 machines_page = st.Page("machines.py", title="Machines", icon="🎛️")
-settings_page = st.Page("page03.py", title="Settings", icon="⚙️")
+settings_page = st.Page("page02.py", title="Settings", icon="⚙️")
 users_page = st.Page("map.py", title="Users", icon="🧑‍💻")
 
 # Create the navigation menu and run the app
@@ -85,7 +85,7 @@ st.sidebar.markdown(f"""
 # place the navigation links exactly where you want them
 st.sidebar.page_link(dashboard_page, label="Dashboard Overview", icon="🏠")
 st.sidebar.page_link(diagnose_page, label="Intelligent Diagnose Terminal", icon="🧠")
-st.sidebar.page_link(maintenance_page, label="Machines Maintenance (Beta)", icon="🛠️")
+st.sidebar.page_link(maintenance_page, label="Machines Maintenance", icon="🛠️")
 st.sidebar.page_link(machines_page, label="Machines Control Panel", icon="🎛️")
 st.sidebar.page_link(settings_page, label="Settings (Beta)", icon="⚙️")
 st.sidebar.page_link(users_page, label="Users (Beta)", icon="🧑‍💻")
