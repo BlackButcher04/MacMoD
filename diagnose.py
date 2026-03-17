@@ -3,7 +3,9 @@ import pandas as pd
 import numpy as np
 import joblib
 import mysql.connector
+from fpdf import FPDF
 import time
+from datetime import datetime
 
 try:
     conn = mysql.connector.connect(
@@ -23,7 +25,55 @@ try:
     engine_status = "✅ V2 AI Engine is Online"
 except FileNotFoundError:
     engine_status = "❌ Engine Missing! (Cannot find sme_engine.pkl)"
+
+def generate_pdf_report(mac_id, mac_name, mac_serial):
+    """Generates a PDF report for a specific machine and returns it as bytes."""
+    # 1. Fetch the latest data for this machine
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM conditions_log WHERE machinesID = %s ORDER BY time_update DESC LIMIT 1", (mac_id,))
+    latest_log = cursor.fetchone()
     
+    # 2. Initialize the PDF
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # 3. Build the Header
+    pdf.set_font("Arial", 'B', 18)
+    pdf.cell(200, 10, txt="MacMoD Diagnostic Report", ln=True, align='C')
+    pdf.set_font("Arial", size=10)
+    pdf.cell(200, 10, txt=f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", ln=True, align='C')
+    pdf.line(10, 30, 200, 30) # Draw a line
+    pdf.ln(10)
+    
+    # 4. Machine Details
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(200, 10, txt="Asset Information:", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt=f"Machine Name: {mac_name}", ln=True)
+    pdf.cell(200, 10, txt=f"Serial Number: {mac_serial}", ln=True)
+    pdf.ln(5)
+    
+    # 5. Latest Sensor Readings
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(200, 10, txt="Latest Telemetry Data:", ln=True)
+    pdf.set_font("Arial", size=12)
+    
+    if latest_log:
+        pdf.cell(200, 10, txt=f"Temperature: {latest_log[1]} C", ln=True)
+        pdf.cell(200, 10, txt=f"Vibration: {latest_log[2]} mm/s", ln=True)
+        pdf.cell(200, 10, txt=f"Acoustic Noise: {latest_log[3]} dB", ln=True)
+        pdf.cell(200, 10, txt=f"RPM: {latest_log[5]}", ln=True)
+        pdf.ln(5)
+        
+        # Highlight the AI Prediction
+        pdf.set_font("Arial", 'B', 12)
+        pdf.cell(200, 10, txt=f"AI Estimated RUL: {latest_log[8]} Cycles", ln=True)
+        pdf.cell(200, 10, txt=f"System Status: {latest_log[9]}", ln=True)
+    else:
+        pdf.cell(200, 10, txt="No sensor data recorded for this machine yet.", ln=True)
+        
+    # 6. Output the PDF as a byte string so Streamlit can download it
+    return pdf.output(dest='S').encode('latin-1')
     
 @st.dialog("Update Machines Condition")
 def update_condition(mac_id,name):
@@ -128,7 +178,7 @@ with tab1:
                 # Create a bordered container "card" for each machine
                 with st.container(border=True):
                     # Using columns inside the container to space out the info
-                    col1, col2, col3 = st.columns(3)
+                    col1, col2, col3 = st.columns([3, 2, 3.5])
                     
                     with col1:
                         st.metric(label="Machine Name", value=mac_name)
@@ -137,10 +187,27 @@ with tab1:
                     
                     with col3:
                         #st.metric(label="Action", value=st.button("Update"))
-                        st.write("Action")
+                        #st.write("Action")
+                        st.markdown('<div style="font-size:14px; color:#64748b; margin-bottom:0.5rem;">Action</div>', unsafe_allow_html=True)
                         #st.button("Update Condition")
-                        if st.button("Update Condition", key=f"update_btn_{mac_id}"):
-                            update_condition(mac_id, mac_name)
+                        
+                        act1, act2 = st.columns(2)
+                        
+                        with act1:
+                            if st.button("Update Condition", key=f"update_btn_{mac_id}", use_container_width=True):
+                                update_condition(mac_id, mac_name)
+                        with act2:
+                            pdf_data = generate_pdf_report(mac_id, mac_name, mac_serial)
+                             
+                            # Create the native Streamlit download button
+                            st.download_button(
+                                label="Print PDF",
+                                data=pdf_data,
+                                file_name=f"{mac_name}_Diagnostic_Report.pdf",
+                                mime="application/pdf",
+                                key=f"print_btn_{mac_id}",
+                                use_container_width=True
+                            )
                             
                     
                     st.divider() # Visual separator inside the card

@@ -70,7 +70,7 @@ def update(id, current_name, current_serial, current_status):
     serial_number = st.text_input("Serial Number", value=current_serial)
     
     # 1. Define the allowed statuses
-    status_options = ["ACTIVE", "INACTIVE", "MAINTENANCE"]
+    status_options = ["ACTIVE", "INACTIVE"]
     
     # 2. Find the index of the current status so the select box defaults to it
     try:
@@ -141,6 +141,7 @@ try:
                     st.write("Action")
                     if st.button("Update", key=f"update_btn_{mac_id}"):
                         update(mac_id, mac_name, mac_serial, mac_status)
+                           
     else:
         st.info("No machines found in the database. Add one above!")
 
