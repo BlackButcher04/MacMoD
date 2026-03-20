@@ -31,4 +31,4 @@ Step to run MacMoD
 For inquiry: Please contact 
 Email (Jun Hwa): ljhwa2004@gmail.com (For setup inquiry)
 Email (Hoe Yien): (For usage inquiry)
-Email (Huey Lym): (For MacMoD friendly feedback)
+Email (Huey Lym): yunatan535@gmail.com(For MacMoD friendly feedback)
