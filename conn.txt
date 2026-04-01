@@ -1,0 +1,4 @@
+DB_HOST="postgresql://postgres:ntB5NBtRWIvrjIqr@db.uoinltgnnrmarlpkcgry.supabase.co:5432/postgres"
+DB_USER="postgres"
+DB_PASSWORD="ntB5NBtRWIvrjIqr"
+DB_NAME="postgres"
