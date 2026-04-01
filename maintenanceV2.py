@@ -21,7 +21,12 @@ apply_enterprise_theme()
 
 # --- 2. Database Connection ---
 try:
-    conn = mysql.connector.connect(host="localhost", user="root", password="root", database="macmod_db")
+    conn = mysql.connector.connect(conn = mysql.connector.connect(
+        host=st.secrets["DB_HOST"],
+        user=st.secrets["DB_USER"],
+        password=st.secrets["DB_PASSWORD"],
+        database=st.secrets["DB_NAME"]
+        ))
     cursor = conn.cursor()
 except mysql.connector.Error as err:
     st.error(f"Database Connection Error: {err}")

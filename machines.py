@@ -4,10 +4,10 @@ import time
 
 try:
     conn = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="macmod_db"
+        host=st.secrets["DB_HOST"],
+        user=st.secrets["DB_USER"],
+        password=st.secrets["DB_PASSWORD"],
+        database=st.secrets["DB_NAME"]
         )
 except mysql.connector.Error as err:
         st.write(err)    
